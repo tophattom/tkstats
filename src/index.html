@@ -9,39 +9,25 @@
     <script src="https://d3js.org/d3.v5.min.js"></script>
     <script src="https://d3js.org/d3-time-format.v2.min.js"></script>
 
-    <style>
-      body {
-        margin: 0 auto;
-        max-width: 960px;
-      }
-
-      .chart {
-        align-items: flex-end;
-        display: flex;
-        height: 17rem;
-      }
-
-      .bar {
-        background: steelblue;
-        border-radius: 0.1rem;
-        flex: 1 1;
-        margin: 0 0.1rem;
-      }
-
-      .bar.warning {
-        background: darkred;
-      }
-
-      .bar:hover {
-        background: green;
-      }
-    </style>
+    <link rel="stylesheet" href="style/main.css">
   </head>
 
   <body>
-    <h1>TK Stats</h1>
+    <main>
+      <h1>TK Stats</h1>
 
-    <div id="charts"></div>
+      <p>
+        Sivusto näyttää Tampereen kiipeilykeskuksen arvioidut kiipeilijämäärät viimeiseltä 24 tunnilta.
+        Data on kerätty kiipeilykeskuksen sivuilta löytyvistä linkeistä viiden minuutin välein ja kuvaajat
+        näyttävät suurimman arvon jokaiselta puolen tunnin ajanjaksolta.
+      </p>
+
+      <div id="charts"></div>
+    </main>
+
+    <footer>
+
+    </footer>
 
     <script src="js/main.js"></script>
   </body>

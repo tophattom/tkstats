@@ -1,7 +1,19 @@
+function prettyTime(timeChunk) {
+  return new Date(`${timeChunk}+00:00`).toLocaleTimeString('fi', { hour: '2-digit', minute: '2-digit' })
+}
+
+function prettyDateTime(timeChunk) {
+  return new Date(`${timeChunk}+00:00`).toLocaleString('fi', { day: 'numeric', month: 'numeric', hour: '2-digit', minute: '2-digit' })
+}
+
 function createChart(gym) {
   const chart = d3.select('#charts')
     .append('div')
       .classed('chart', true);
+
+  chart.append('h2').text(gym.name);
+
+  const chartContent = chart.append('div').classed('chart-content', true);
 
   d3.json(`https://tkstats.r-f.fi/api.php?gym_id=${gym.id}`)
     .then(data => {
@@ -9,22 +21,44 @@ function createChart(gym) {
         .domain([0, d3.max(data, d => d.max)])
         .range([0, 100]);
 
-      chart.append('div')
-        .classed('axis', true);
+      const yAxisElem = chartContent.append('div')
+        .classed('axis-y', true);
 
-      chart.selectAll('div.bar')
+      yAxis.ticks(5).forEach(tick => {
+        yAxisElem.append('div')
+          .classed('tick', true)
+          .classed('tick-y', true)
+          .style('bottom', `${yAxis(tick)}%`)
+          .text(tick);
+      });
+
+      const bars = chartContent.selectAll('div.bar')
         .data(data)
-        .enter()
-        .append('div')
+        .join('div')
           .classed('bar', true)
-          .classed('warning', d => d.max >= 20)
+          .classed('warning', d => d.max >= 25)
+          .attr('data-value', d => d.max)
           .style('height', d => `${Math.max(2, yAxis(d.max))}%`);
+
+      const xTicks = bars.append('span')
+          .classed('tick', true)
+          .classed('tick-x', true)
+          .text(d => prettyTime(d.time_chunk));
+
+      const tooltips = bars.append('div').classed('tooltip', true);
+      tooltips.append('span')
+        .classed('timestamp', true)
+        .text(d => prettyDateTime(d.time_chunk));
+
+      tooltips.append('span')
+        .text(d => d.max);
     });
 }
 
 document.addEventListener('DOMContentLoaded', () => {
   const gyms = [
     { id: 1, name: 'Nekala' },
+    { id: 2, name: 'Lielahti' },
   ];
 
   gyms.forEach(createChart);

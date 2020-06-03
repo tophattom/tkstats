@@ -1,0 +1,102 @@
+*, *::after, *::before {
+  box-sizing: border-box;
+}
+
+body {
+  font-family: sans-serif;
+  line-height: 1.3;
+  margin: 0 auto;
+  max-width: 850px;
+  padding: 2rem 2rem 10rem;
+}
+
+p {
+  font-size: 1rem;
+}
+
+.chart {
+  margin-top: 3rem;
+}
+
+.chart-content {
+  align-items: flex-end;
+  display: flex;
+  height: 10rem;
+}
+
+.bar {
+  background: steelblue;
+  border-radius: 0.1rem;
+  flex: 1 1;
+  margin: 0 0.1rem;
+  position: relative;
+}
+
+.bar.warning {
+  background: darkred;
+}
+
+.bar:hover {
+  background: lightblue;
+}
+
+.bar.warning:hover {
+  background: pink;
+}
+
+.tick-x {
+  bottom: 0;
+  display: none;
+  left: 50%;
+  position: absolute;
+  transform: translate(-50%, calc(100% + 0.5rem));
+}
+
+.bar:nth-child(6n+2) .tick-x {
+  display: initial;
+}
+
+.tooltip {
+  background: #222;
+  border-radius: 0.1rem;
+  color: #fefefe;
+  display: none;
+  font-size: 0.75rem;
+  left: 50%;
+  padding: 0.1rem 0.3rem;
+  position: absolute;
+  top: 0;
+  transform: translate(-50%, calc(-100% - 0.5rem));
+  z-index: 10;
+}
+
+.tooltip span {
+  display: block;
+  text-align: center;
+}
+
+.tooltip .timestamp {
+  white-space: nowrap;
+}
+
+.bar:hover .tooltip {
+  display: block;
+}
+
+.axis-y {
+  height: 100%;
+  margin-right: 0.5rem;
+  position: relative;
+  width: 1.5rem;
+}
+
+.tick-y {
+  position: absolute;
+  text-align: right;
+  transform: translate(0, 50%);
+  width: 100%;
+}
+
+.tick {
+  font-size: 0.75rem;
+}
