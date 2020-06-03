@@ -7,11 +7,29 @@ body {
   line-height: 1.3;
   margin: 0 auto;
   max-width: 850px;
-  padding: 2rem 2rem 10rem;
+  padding: 2rem 2rem 2rem;
 }
 
 p {
   font-size: 1rem;
+}
+
+footer {
+  margin-top: 7rem;
+  text-align: center;
+}
+
+footer a {
+  color: #777;
+}
+
+footer a:hover {
+  color: black;
+}
+
+footer svg {
+  height: auto;
+  width: 2rem;
 }
 
 .chart {
