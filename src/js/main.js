@@ -6,7 +6,13 @@ function prettyDateTime(timeChunk) {
   return new Date(`${timeChunk}+00:00`).toLocaleString('fi', { day: 'numeric', month: 'numeric', hour: '2-digit', minute: '2-digit' })
 }
 
-function createChart(gym) {
+async function fetchData(gyms) {
+  const promises = gyms.map(gym => d3.json(`https://tkstats.r-f.fi/api.php?gym_id=${gym.id}`)
+    .then(data => ({...gym, data: data})));
+  return Promise.all(promises);
+}
+
+function createChart(gym, max) {
   const chart = d3.select('#charts')
     .append('div')
       .classed('chart', true);
@@ -15,44 +21,41 @@ function createChart(gym) {
 
   const chartContent = chart.append('div').classed('chart-content', true);
 
-  d3.json(`https://tkstats.r-f.fi/api.php?gym_id=${gym.id}`)
-    .then(data => {
-      const yAxis = d3.scaleLinear()
-        .domain([0, d3.max(data, d => d.max)])
-        .range([0, 100]);
+  const yAxis = d3.scaleLinear()
+    .domain([0, max])
+    .range([0, 100]);
 
-      const yAxisElem = chartContent.append('div')
-        .classed('axis-y', true);
+  const yAxisElem = chartContent.append('div')
+    .classed('axis-y', true);
 
-      yAxis.ticks(5).forEach(tick => {
-        yAxisElem.append('div')
-          .classed('tick', true)
-          .classed('tick-y', true)
-          .style('bottom', `${yAxis(tick)}%`)
-          .text(tick);
-      });
+  yAxis.ticks(5).forEach(tick => {
+    yAxisElem.append('div')
+      .classed('tick', true)
+      .classed('tick-y', true)
+      .style('bottom', `${yAxis(tick)}%`)
+      .text(tick);
+  });
 
-      const bars = chartContent.selectAll('div.bar')
-        .data(data)
-        .join('div')
-          .classed('bar', true)
-          .classed('warning', d => d.max >= 25)
-          .attr('data-value', d => d.max)
-          .style('height', d => `${Math.max(2, yAxis(d.max))}%`);
+  const bars = chartContent.selectAll('div.bar')
+    .data(gym.data)
+    .join('div')
+      .classed('bar', true)
+      .classed('warning', d => d.max >= 25)
+      .attr('data-value', d => d.max)
+      .style('height', d => `${Math.max(2, yAxis(d.max))}%`);
 
-      const xTicks = bars.append('span')
-          .classed('tick', true)
-          .classed('tick-x', true)
-          .text(d => prettyTime(d.time_chunk));
+  const xTicks = bars.append('span')
+      .classed('tick', true)
+      .classed('tick-x', true)
+      .text(d => prettyTime(d.time_chunk));
 
-      const tooltips = bars.append('div').classed('tooltip', true);
-      tooltips.append('span')
-        .classed('timestamp', true)
-        .text(d => prettyDateTime(d.time_chunk));
+  const tooltips = bars.append('div').classed('tooltip', true);
+  tooltips.append('span')
+    .classed('timestamp', true)
+    .text(d => prettyDateTime(d.time_chunk));
 
-      tooltips.append('span')
-        .text(d => d.max);
-    });
+  tooltips.append('span')
+    .text(d => d.max);
 }
 
 document.addEventListener('DOMContentLoaded', () => {
@@ -61,5 +64,8 @@ document.addEventListener('DOMContentLoaded', () => {
     { id: 2, name: 'Lielahti' },
   ];
 
-  gyms.forEach(createChart);
+  fetchData(gyms).then(gymData => {
+    const max = d3.max(gymData.map(gym => d3.max(gym.data, timeChunk => timeChunk.max)));
+    gymData.forEach(gym => createChart(gym, max));
+  })
 });
