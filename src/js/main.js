@@ -7,7 +7,8 @@ function prettyDateTime(timeChunk) {
 }
 
 async function fetchData(gyms) {
-  const promises = gyms.map(gym => d3.json(`https://tkstats.r-f.fi/api.php?gym_id=${gym.id}`));
+  const promises = gyms.map(gym => d3.json(`https://tkstats.r-f.fi/api.php?gym_id=${gym.id}`)
+    .then(data => ({...gym, data: data})));
   return Promise.all(promises);
 }
 
@@ -36,7 +37,7 @@ function createChart(gym, max) {
   });
 
   const bars = chartContent.selectAll('div.bar')
-    .data(gym)
+    .data(gym.data)
     .join('div')
       .classed('bar', true)
       .classed('warning', d => d.max >= 25)
@@ -63,8 +64,8 @@ document.addEventListener('DOMContentLoaded', () => {
     { id: 2, name: 'Lielahti' },
   ];
 
-  fetchData(gyms).then(data => {
-    const max = d3.max(data.map(gym => d3.max(gym, timeChunk => timeChunk.max)));
-    data.forEach(gym => createChart(gym, max));
+  fetchData(gyms).then(gymData => {
+    const max = d3.max(gymData.map(gym => d3.max(gym.data, timeChunk => timeChunk.max)));
+    gymData.forEach(gym => createChart(gym, max));
   })
 });
