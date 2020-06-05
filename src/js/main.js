@@ -1,14 +1,27 @@
 function prettyTime(timeChunk) {
-  return new Date(`${timeChunk}+00:00`).toLocaleTimeString('fi', { hour: '2-digit', minute: '2-digit' })
+  return (new Date(`${timeChunk}+00:00`)).toLocaleTimeString(
+    'fi',
+    { hour: '2-digit', minute: '2-digit' }
+  );
 }
 
 function prettyDateTime(timeChunk) {
-  return new Date(`${timeChunk}+00:00`).toLocaleString('fi', { day: 'numeric', month: 'numeric', hour: '2-digit', minute: '2-digit' })
+  return (new Date(`${timeChunk}+00:00`)).toLocaleString(
+    'fi',
+    {
+      day: 'numeric',
+      month: 'numeric',
+      hour: '2-digit',
+      minute: '2-digit'
+    }
+  );
 }
 
-async function fetchData(gyms) {
-  const promises = gyms.map(gym => d3.json(`https://tkstats.r-f.fi/api.php?gym_id=${gym.id}`)
-    .then(data => ({...gym, data: data})));
+function fetchData(gyms) {
+  const promises = gyms.map(
+    gym => d3.json(`https://tkstats.r-f.fi/api.php?gym_id=${gym.id}`)
+      .then(data => ({ ...gym, data: data }))
+  );
   return Promise.all(promises);
 }
 
