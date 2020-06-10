@@ -19,7 +19,7 @@ function prettyDateTime(timeChunk) {
 
 function fetchData(gyms) {
   const promises = gyms.map(
-    gym => d3.json(`https://tkstats.r-f.fi/api.php?gym_id=${gym.id}`)
+    gym => d3.json(`https://tkstats.r-f.fi/api.php?gym_id=${gym.id}&time_step=3600&period=36`)
       .then(data => ({ ...gym, data: data }))
   );
   return Promise.all(promises);
