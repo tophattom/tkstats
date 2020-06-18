@@ -1,0 +1,19 @@
+[tool.poetry]
+name = "tkstats"
+version = "0.1.0"
+description = ""
+authors = ["Jaakko Rinta-Filppula <jaakko@r-f.fi>"]
+
+[tool.poetry.dependencies]
+python = "^3.8"
+pandas = "^1.0.4"
+statsmodels = "^0.11.1"
+flask = "^1.1.2"
+uwsgi = "^2.0.19"
+
+[tool.poetry.dev-dependencies]
+pytest = "^5.2"
+
+[build-system]
+requires = ["poetry>=0.12"]
+build-backend = "poetry.masonry.api"

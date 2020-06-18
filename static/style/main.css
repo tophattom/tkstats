@@ -37,29 +37,63 @@ footer svg {
 }
 
 .chart-content {
-  align-items: flex-end;
+  align-items: stretch;
   display: flex;
   height: 10rem;
 }
 
-.bar {
-  background: steelblue;
-  border-radius: 0.1rem;
+.datapoint {
   flex: 1 1;
   margin: 0 0.1rem;
   position: relative;
+}
+
+.bar-group {
+  height: 100%;
+  position: relative;
+}
+
+.bar {
+  border-radius: 0.1rem;
+  bottom: 0;
+  left: 0;
+  position: absolute;
+  width: 100%;
+  /*flex: 1 1;
+  margin: 0 0.1rem;
+  position: relative;*/
+}
+
+.bar.measurement {
+  background: steelblue;
 }
 
 .bar.warning {
   background: darkred;
 }
 
-.bar:hover {
+.bar.forecast {
+  background: grey;
+}
+
+.bar.forecast.warning {
+  background: rosybrown;
+}
+
+.bar.measurement:hover {
   background: lightblue;
 }
 
 .bar.warning:hover {
   background: pink;
+}
+
+.bar.forecast:hover {
+  background: lightgrey;
+}
+
+.bar.forecast.warning:hover {
+  background: mistyrose;
 }
 
 .tick-x {
@@ -70,7 +104,7 @@ footer svg {
   transform: translate(-50%, calc(100% + 0.5rem));
 }
 
-.bar:nth-child(6n+2) .tick-x {
+.datapoint:nth-child(6n+2) .tick-x {
   display: initial;
 }
 
