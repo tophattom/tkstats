@@ -14,6 +14,16 @@ p {
   font-size: 1rem;
 }
 
+header {
+  align-items: center;
+  display: flex;
+}
+
+header img {
+  height: 4rem;
+  margin-right: 0.7rem;
+}
+
 footer {
   margin-top: 7rem;
   text-align: center;
@@ -30,6 +40,10 @@ footer a:hover {
 footer svg {
   height: auto;
   width: 2rem;
+}
+
+.header-hidden {
+  display: none;
 }
 
 .chart {
