@@ -2,7 +2,7 @@ const MEASUREMENT_PERIOD = 30;
 const FORECAST_PERIOD = 6;
 
 function timeChunkToIso(timeChunk) {
-  return (new Date(`${timeChunk}+00:00`)).toISOString();
+  return (new Date(`${timeChunk.replace(' ', 'T')}+00:00`)).toISOString();
 }
 
 function prettyTime(time) {
