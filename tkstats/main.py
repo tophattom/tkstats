@@ -43,7 +43,7 @@ class StatsDb:
                 {}
             )
             SELECT
-                strftime('%w', time_chunk) + 1 AS weekday,
+                strftime('%w', time_chunk) AS weekday,
                 time(time_chunk) AS hour,
                 avg(max) AS avg_max
             FROM max_counts
@@ -90,6 +90,21 @@ def api(gym_id):
     result = stats_db.get_gym_data(gym_id, time_step=time_step, period_hours=period_hours)
 
     return Response(json.dumps({'data': result}), mimetype='application/json')
+
+
+@app.route('/gym/<int:gym_id>/frequency', methods=['GET'])
+def frequency_api(gym_id):
+    stats_db = StatsDb()
+    result = stats_db.get_frequency_data(gym_id)
+
+    res = {}
+    for r in result:
+        if r['weekday'] not in res:
+            res[r['weekday']] = []
+
+        res[r['weekday']].append(r)
+
+    return Response(json.dumps({'data': res}), mimetype='application/json')
 
 
 @app.route('/gym/<int:gym_id>/forecast', methods=['GET'])
