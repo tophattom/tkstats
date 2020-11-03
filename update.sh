@@ -11,7 +11,7 @@ LIELAHTI_DB_ID=2
 
 fetchCount() {
   local URL="${BASE_URL}$1"
-  local COUNT=$(curl --silent $URL)
+  local COUNT=$(curl --silent $URL | html2text)
 
   sqlite3 $STATS_DB "INSERT INTO visitor_counts(count, gym_id) VALUES ($COUNT, $2);"
 }
