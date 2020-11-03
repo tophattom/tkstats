@@ -18,8 +18,8 @@ FORECAST_TRAIN_PERIOD_HOURS = FORECAST_SEASON_LENGTH * 3
 
 
 class StatsDb:
-    def __init__(self):
-        self.database_file = os.environ.get('DATABASE_FILE')
+    def __init__(self, database_file=None):
+        self.database_file = database_file or os.environ.get('DATABASE_FILE')
         self.conn = sqlite3.connect(self.database_file)
         self.conn.row_factory = sqlite3.Row
 
@@ -33,12 +33,38 @@ class StatsDb:
             WHERE
               gym_id = :gym_id and
               time_chunk >= datetime(strftime('%s', 'now', :period) - strftime('%s', 'now', :period) % :timestep, 'unixepoch')
-            GROUP BY time_chunk;
+            GROUP BY time_chunk
         '''
+
+    @classmethod
+    def frequency_data_query(cls):
+        return '''
+            WITH max_counts AS (
+                {}
+            )
+            SELECT
+                strftime('%w', time_chunk) + 1 AS weekday,
+                time(time_chunk) AS hour,
+                avg(max) AS avg_max
+            FROM max_counts
+            GROUP BY weekday, hour;
+        '''.format(cls.gym_data_query())
 
     def get_gym_data(self, gym_id, time_step=1800, period_hours=24):
         result = self.conn.execute(
-            self.gym_data_query(),
+            '{};'.format(self.gym_data_query()),
+            {
+                'timestep': time_step,
+                'gym_id': gym_id,
+                'period': self.sql_period(period_hours)
+            }
+        ).fetchall()
+
+        return [dict(row) for row in result]
+
+    def get_frequency_data(self, gym_id, time_step=3600, period_hours=672):
+        result = self.conn.execute(
+            self.frequency_data_query(),
             {
                 'timestep': time_step,
                 'gym_id': gym_id,
