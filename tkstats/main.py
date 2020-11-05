@@ -97,14 +97,7 @@ def frequency_api(gym_id):
     stats_db = StatsDb()
     result = stats_db.get_frequency_data(gym_id)
 
-    res = {}
-    for r in result:
-        if r['weekday'] not in res:
-            res[r['weekday']] = []
-
-        res[r['weekday']].append(r)
-
-    return Response(json.dumps({'data': res}), mimetype='application/json')
+    return Response(json.dumps({'data': result}), mimetype='application/json')
 
 
 @app.route('/gym/<int:gym_id>/forecast', methods=['GET'])
