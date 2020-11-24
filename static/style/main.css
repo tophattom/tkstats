@@ -166,3 +166,45 @@ footer svg {
 .tick {
   font-size: 0.75rem;
 }
+
+.freq-chart-row {
+  display: flex;
+}
+
+.freq-chart-tick-block {
+  position: relative;
+}
+
+.freq-chart-block {
+  border-radius: 0.1rem;
+  flex-grow: 1;
+  margin: 0.2%;
+}
+
+.freq-chart-block::after {
+  content: '';
+  display: block;
+  padding-top: 100%;
+}
+
+.freq-chart-tick {
+  left: 50%;
+  position: absolute;
+  top: 50%;
+  transform: translate(-50%, -50%);
+}
+
+
+@media (max-width: 550px) {
+  .freq-chart-tick-hour {
+    display: none;
+  }
+
+  .freq-chart-tick-block:nth-child(3n+2) .freq-chart-tick-hour {
+    display: initial;
+  }
+
+  .weekday-row:nth-child(odd) .freq-chart-tick {
+    display: none;
+  }
+}
