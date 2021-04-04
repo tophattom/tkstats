@@ -17,6 +17,34 @@ FORECAST_SEASON_LENGTH = 168
 FORECAST_TRAIN_PERIOD_HOURS = FORECAST_SEASON_LENGTH * 3
 
 
+class PgStatsDb:
+    @classmethod
+    def gym_data_query(cls):
+        return '''
+            SELECT
+                date_trunc(%(timestep)s, timestamp) AT TIME ZONE 'utc' AT TIME ZONE 'Europe/Helsinki' AS time_chunk,
+                max(count) AS max
+            FROM visitor_counts
+            WHERE
+                gym_id = %(gym_id)d and
+                date_trunc(%(timestep)s, timestamp) >= date_trunc(%(timestep)s, now() - interval %(period)s)
+            GROUP BY time_chunk
+        '''
+
+    def frequency_data_quer(cls):
+        return '''
+            WITH max_counts AS (
+                {}
+            )
+            SELECT
+                date_part('isodow', time_chunk) AS weekday,
+                date_part('hour', time_chunk) AS hour,
+                avg(max) AS avg_max
+            FROM max_counts
+            GROUP BY weekday, hour
+        '''.format(cls.gym_data_query())
+
+
 class StatsDb:
     def __init__(self, database_file=None):
         self.database_file = database_file or os.environ.get('DATABASE_FILE')
