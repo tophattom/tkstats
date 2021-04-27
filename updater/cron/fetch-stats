@@ -1,0 +1,1 @@
+*/5 * * * * /script/update.sh /data/tkstats.db >> /var/log/cron.log 2>&1

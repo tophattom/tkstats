@@ -11,3 +11,11 @@ services:
       - 3031:3031
     volumes:
       - ./tkstats.db:/data/tkstats.db
+
+  updater:
+    build:
+      context: ./updater
+    image: tkstats-updater:latest
+    restart: always
+    volumes:
+      - ./tkstats.db:/data/tkstats.db
